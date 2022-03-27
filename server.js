@@ -22,14 +22,32 @@ connection.connect();
 
 const req = require('express/lib/request');
 
+const createSalt = () =>
+    new Promise((resolve, reject) => {
+        crypto.randomBytes(64, (err, buf) => {
+            if (err) reject(err);
+            resolve(buf.toString('base64'));
+        });
+    });
+
+const createHashedPassword = (plainPassword) =>
+    new Promise(async (resolve, reject) => {
+        const salt = await createSalt();
+        crypto.pbkdf2(plainPassword, salt, 9999, 64, 'sha512', (err, key) => {
+            if (err) reject(err);
+            resolve({ password: key.toString('base64'), salt });
+        });
+    });
+
 //회원가입
 app.post('/signup', (req, res) => {
-    let sql = 'INSERT INTO USER VALUES (NULL, ?, ?, ?, ?)';
+    let sql = 'INSERT INTO USER VALUES (?, ?, ?, ?, ?)';
+    let token = req.body.token; //토큰은 이렇게 받는걸까?
     let id = req.body.id;
     let pw = req.body.pw;
-    let pw_check = req.body.pw_check;
     let nickname = req.body.nickname;
-    let params = [id, pw, pw_check, nickname];
+    let { hashedPw, salt} = await createHashedPassword(pw);
+    let params = [token, id, hashedPw, salt, nickname];
     connection.query(sql, params,
       (err, rows, fields) => {
         res.send(rows);
