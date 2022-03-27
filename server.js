@@ -46,8 +46,8 @@ app.post('/signup', (req, res) => {
     let id = req.body.id;
     let pw = req.body.pw;
     let nickname = req.body.nickname;
-    let { hashedPw, salt} = await createHashedPassword(pw);
-    let params = [token, id, hashedPw, salt, nickname];
+    let { hashedPassword, salt} = await createHashedPassword(pw);
+    let params = [token, id, hashedPassword, salt, nickname];
     connection.query(sql, params,
       (err, rows, fields) => {
         res.send(rows);
