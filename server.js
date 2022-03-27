@@ -22,4 +22,19 @@ connection.connect();
 
 const req = require('express/lib/request');
 
+//회원가입
+app.post('/signup', (req, res) => {
+    let sql = 'INSERT INTO USER VALUES (NULL, ?, ?, ?, ?)';
+    let id = req.body.id;
+    let pw = req.body.pw;
+    let pw_check = req.body.pw_check;
+    let nickname = req.body.nickname;
+    let params = [id, pw, pw_check, nickname];
+    connection.query(sql, params,
+      (err, rows, fields) => {
+        res.send(rows);
+      }
+    );
+  });
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
