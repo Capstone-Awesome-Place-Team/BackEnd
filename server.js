@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 
 const data = fs.readFileSync('./database.json');
-const conf = JSON.parse(data);
+const conf = JSON.parse(data); 
 const mariaDB = require('mysql');
 
 const connection = mariaDB.createConnection({ //DB 연결
