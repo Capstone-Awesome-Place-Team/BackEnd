@@ -1,3 +1,6 @@
+# 클라이언트 부분
+프론트쪽이라 일단 기본 create-react-app으로 만든 그대로 묶어 넣어놓음. 백엔드는 root에서 작업하겠음. 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
