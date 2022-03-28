@@ -7,6 +7,6 @@ const router = require('./routes/routes')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
-app.use('/awesomeplace', router) //url 뭘로 해야할지 모르겠음..
+app.use('/', router)
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //포트 응답 확인
