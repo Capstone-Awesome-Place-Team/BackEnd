@@ -1,6 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+<<<<<<< HEAD
 # database 보안상 gitignore 해야함! pw유출 조심!
+=======
+#database 보안상 gitignore 해야함! pw유출 조심!
+>>>>>>> b32b14473b146cecc85da60128bc3973f9b11c50
 /config/database.json
 
 # dependencies
