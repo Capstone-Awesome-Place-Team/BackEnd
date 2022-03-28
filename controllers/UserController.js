@@ -31,11 +31,11 @@ module.export = {
             let id = req.body.id;
             let pw = req.body.pw;
             let nickname = req.body.nickname;
-            let sql1 = 'SELECT id FROM USER WHERE id = ?' //sql 쿼리문-> id 에맞는 row들고 오고싶다
+            let sql1 = 'SELECT id FROM USER WHERE id = ?'
             connection.query(sql1, [user_id], function (err, rows, fields) {
                 console.log(rows);
                 
-                if (rows[0] === undefined) { //중복되는게 없는 경우 DB에 INSERT
+                if (rows[0] === undefined) { //중복되는게 없는 경우
                     let sql2 = 'INSERT INTO USER VALUES (?, ?, ?, ?, ?)';
             
                     let { hashedPassword, salt} = await createHashedPassword(pw);
