@@ -46,7 +46,7 @@ module.export = {
                         });
                     }
                 else {    
-                    res.status(400).send({ //번호 바꿔야하는지?
+                    res.status(400).send({ 
                         errorMessage: '해당 ID는 이미 존재합니다. '
                     });  //ID 중복
                 }
