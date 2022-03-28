@@ -1,6 +1,9 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-#database 보안상 gitignore 해야함! pw유출 조심!
+# 프론트엔드 영역. 백엔드에서는 다룰필요 없음. 
+/Client
+
+# database 보안상 gitignore 해야함! pw유출 조심!
 /config/database.json
 
 # dependencies
