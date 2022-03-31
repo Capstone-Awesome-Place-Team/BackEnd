@@ -1,12 +1,50 @@
-//Model: DB에서 값을 가져오고 Controller에 반환하는 역할
-//UserModel작성하기
-
-const connection = require('../config/mariaDB')
-connection.connect();
-
-const User = {
-    //User데이터 불러오기
-    getUser: async (id) => {
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class USER extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
     }
-    //User데이터 입력하기
-}
+  }
+  USER.init({
+    token: {
+      type: DataTypes.STRING(255),
+      defaultValue: null, 
+      unique: false
+    }, 
+    id: {
+      primaryKey: true, 
+      type: DataTypes.STRING(15),
+      unique: false, 
+      allowNull: false
+    }, 
+    pw: {
+      type: DataTypes.STRING(15), 
+      allowNull: false
+    }, 
+    salt: {
+      type: Sequelize.STRING(255), 
+      allowNull: false
+    },
+    nickname: {
+      type: DataTypes.STRING(15), 
+      allowNull: false, 
+      defaultValue: "unknown"
+    }
+  }, 
+  {
+    sequelize, 
+    timestamps: false, 
+    freezeTableName: true, 
+    modelName: 'USER',
+  });
+  return USER;
+  
+};

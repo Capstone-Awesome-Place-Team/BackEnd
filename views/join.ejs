@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Join</title>
+</head>
+<body>
+<h3>회원가입</h3>
+
+<script language="JavaScript">
+    function randomNumber() {
+        var f = document.testView;
+        var ranNum = 0;
+        var ranValue = 0;
+        ranNum = Math.floor(Math.random()*10000);
+        ranNum.value= ranValue;
+        f.ranValue.value = ranNum;
+        f.action="/signup"
+        f.method="post"
+        f.submit();
+    };
+    console.log("난수: " + randomNumber());
+</script>
+
+<form name ="testView">
+    <table>
+        <tr>
+            <td>아이디 : </td>
+            <td><input type="text" name="id"></td>
+        </tr>
+        <tr>
+            <td>닉네임 : </td>
+            <td><input type="text" name="nickname"></td>
+        </tr>
+        <tr>
+            <td>비번 : </td>
+            <td><input type="password" name="pw"></td>
+        </tr>
+        <tr>
+            <input type="hidden" name="ranNum">
+        </tr>
+        <tr>
+            <td><input type="submit" value="회원가입"></td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>
