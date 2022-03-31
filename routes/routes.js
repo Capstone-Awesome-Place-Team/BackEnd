@@ -5,6 +5,6 @@ const req = require('express/lib/request');
 var userController = require('../controllers/UserController')
 //controller 읽기
 
-router.post('/signup', userController.SignupUser); //회원가입 url 매핑
+router.post('/', userController.Signup); //회원가입 url 매핑
 
 module.exports = router;
