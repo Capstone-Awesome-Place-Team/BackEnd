@@ -26,11 +26,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }, 
     pw: {
-      type: DataTypes.STRING(15), 
+      type: DataTypes.STRING(255), 
       allowNull: false
     }, 
     salt: {
-      type: Sequelize.STRING(255), 
+      type: DataTypes.STRING(255), 
       allowNull: false
     },
     nickname: {
@@ -44,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false, 
     freezeTableName: true, 
     modelName: 'USER',
+    paranoid: false, 
+    charset: 'utf8',
+    collate: 'utf8_general_ci'
   });
   return USER;
   
