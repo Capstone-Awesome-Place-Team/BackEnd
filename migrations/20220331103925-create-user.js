@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       }, 
       salt: {
-        type: Sequelize.STRING(255), 
+        type: Sequelize.INTEGER, 
         allowNull: false
       }, 
       nickname: {

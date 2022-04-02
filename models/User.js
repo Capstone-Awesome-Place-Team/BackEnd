@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }, 
     salt: {
-      type: DataTypes.STRING(255), 
+      type: DataTypes.INTEGER, 
       allowNull: false
     },
     nickname: {
