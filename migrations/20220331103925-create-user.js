@@ -14,7 +14,7 @@ module.exports = {
         allowNull: false
       }, 
       pw: {
-        type: Sequelize.STRING(15), 
+        type: Sequelize.STRING(255), 
         allowNull: false
       }, 
       salt: {
