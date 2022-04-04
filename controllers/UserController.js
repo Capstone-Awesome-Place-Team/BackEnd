@@ -24,7 +24,7 @@ exports.Signup = async function(req, res) {
                     nickname : req.body.nickname
                 })
                 .then((result) => {
-                    res.status(200).send('로그인 성공');
+                    res.status(200).send('회원가입 성공');
                 })
                 .catch((err) => {
                     res.send(err);
