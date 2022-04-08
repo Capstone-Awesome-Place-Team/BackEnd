@@ -6,5 +6,7 @@ var userController = require('../controllers/UserController')
 //controller 읽기
 
 router.post('/', userController.Signup); //회원가입 url 매핑
-
+//유빈---
+router.post('/', userController.Signin);
+//---
 module.exports = router;

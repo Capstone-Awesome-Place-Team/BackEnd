@@ -4,23 +4,6 @@ const crypto = require('crypto');
 //아직 view에 대한 계획 X
 //router에서 받은 request에 대해 Model에서 받은 데이터 작업 수행 후 결과 View로 전달
 
-const createSalt = () =>
-    new Promise((resolve, reject) => {
-        crypto.randomBytes(64, (err, buf) => {
-            if (err) reject(err);
-            resolve(buf.toString('base64'));
-        });
-    });
-
-const createHashedPassword = (plainPassword) =>
-    new Promise(async (resolve, reject) => {
-        const salt = await createSalt();
-        crypto.pbkdf2(plainPassword, salt, 9999, 64, 'sha512', (err, key) => {
-            if (err) reject(err);
-            resolve({ password: key.toString('base64'), salt });
-        });
-    });
-
 //회원가입
 exports.Signup = async function(req, res) {
     try {
@@ -35,18 +18,18 @@ exports.Signup = async function(req, res) {
             }
             else {
                 USER.create({
-                    id : req.body.id, 
-                    pw : hash_pw, 
-                    salt : salt_value, 
+                    id : req.body.id,
+                    pw : hash_pw,
+                    salt : salt_value,
                     nickname : req.body.nickname
                 })
                 .then((result) => {
-                    res.status(200).send('로그인 성공');
+                    res.status(200).send('회원가입 성공');
                 })
                 .catch((err) => {
                     res.send(err);
                 });
-            }      
+            }
         });
     } catch (error) {
         console.log(error);
@@ -55,3 +38,34 @@ exports.Signup = async function(req, res) {
             })
     }
 }
+
+//유빈 - 로그인 구현
+exports.Signin = async function(req, res) {
+  try {
+    let body = req.body;
+
+    if(!body.id) {
+      res.status(500).send({ message: "존재하지 않는 아이디 입니다." });
+      return;
+    }
+    let result = await models.user.findOne({
+      where: {
+        id : body.id
+      }
+    });
+    let db_pw = result.dataValues.pw;
+    let inputPW = body.pw;
+    if (db_pw === hash_pw) {
+      res.send({
+        message: "로그인에 성공했습니다. ",
+        status:'success',
+        data:{ id : body.id }
+      });
+    }
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send({ errorMessage: '로그인 오류' });
+  }
+}
+//---유빈

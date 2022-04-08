@@ -36,7 +36,6 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.get('/signup', (req, res) => {
 	res.render('signup');
 })
-
-app.use('/signup', router)
+app.use('/', router)
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //포트 응답 확인
