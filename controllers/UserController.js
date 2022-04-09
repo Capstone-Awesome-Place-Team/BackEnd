@@ -1,4 +1,9 @@
-const USER = require('../models/').USER; //Model
+//Model
+const USER = require('../models/').USER; 
+const RESTAURANT = require('../models/').RESTAURANT;
+const LIKE = require('../models/').LIKE;
+
+
 const Views = '../views'
 const crypto = require('crypto');
 //아직 view에 대한 계획 X
