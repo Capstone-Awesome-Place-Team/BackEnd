@@ -38,3 +38,62 @@ exports.Signup = async function(req, res) {
             })
     }
 }
+
+//마이페이지 정보불러오기
+/*
+====보내줘야 하는 JSON====
+
+{
+nickname: ””,
+like_list: 
+[
+{
+ restaurant_name: “”,
+ img: “이미지 URL”,
+ address: “”,
+  star:number,
+  options: {
+   takeout: boolean,
+  parking: boolean,
+ pet : boolean,
+nokids: boolean,
+}
+},
+...
+]
+}
+======================
+*/
+exports.Mypage = async function(req, res) {
+    try {
+        let userInfo = await USER.findOne({where : {token: req.body.token}})
+        if(userInfo) {
+            let LikeList = await LIKE.findOne({
+                where : {token: req.body.token}
+            })
+            res.send({
+                status: 200, 
+                data: {
+                    nickname: userInfo.dataValue.nickname, 
+                    like_list: [
+                        {
+                            restaurant_name: "", 
+                            img: "image url", 
+                            address: "", 
+                            star: 0, 
+                            options: {
+                                takeout: false, 
+                                parking: false
+                            }
+                        }
+                    ]                   
+                }
+            })
+        }
+    } catch (error) {
+        console.log(error);
+            res.status(400).send({
+                errorMessage: '마이페이지 로딩중 오류가 발생했습니다. '
+            })
+    }
+}
