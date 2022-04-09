@@ -5,12 +5,12 @@ module.exports = {
       token: {
         primaryKey: true, 
         type: Sequelize.STRING(255),
-        unique: false
+        unique: true
       }, 
       r_code: {
         primaryKey: true, 
         type: Sequelize.INTEGER,
-        unique: false
+        unique: true
       }
     });
   },

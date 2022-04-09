@@ -5,8 +5,9 @@ module.exports = {
       r_code: {
         primaryKey: true, 
         type: Sequelize.INTEGER,
-        unique: false, 
-        allowNull: false
+        unique: true, 
+        allowNull: false, 
+        autoIncrement: true
       },
       image: {
         type: Sequelize.STRING(255),

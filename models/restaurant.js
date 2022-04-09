@@ -4,22 +4,18 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class RESTAURANT extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
       models.RESTAURANT.hasMany(models.LIKE, { foreignKey : 'r_code', sourceKey : 'r_code'});
+      models.RESTAURANT.hasMany(models.THEME, { foreignKey : 'r_code', sourceKey : 'r_code'});
     }
   }
   RESTAURANT.init({
     r_code: {
       primaryKey: true, 
       type: DataTypes.INTEGER,
-      unique: false, 
-      allowNull: false
+      unique: true, 
+      allowNull: false, 
+      autoIncrement: true
     },
     image: {
       type: DataTypes.STRING(255),
