@@ -39,54 +39,38 @@ exports.Signup = async function(req, res) {
     }
 }
 
-//마이페이지 정보불러오기
-/*
-====보내줘야 하는 JSON====
-
-{
-nickname: ””,
-like_list: 
-[
-{
- restaurant_name: “”,
- img: “이미지 URL”,
- address: “”,
-  star:number,
-  options: {
-   takeout: boolean,
-  parking: boolean,
- pet : boolean,
-nokids: boolean,
-}
-},
-...
-]
-}
-======================
-*/
 exports.Mypage = async function(req, res) {
     try {
-        let userInfo = await USER.findOne({where : {token: req.body.token}})
+        let userNickname = await USER.findOne({
+            attributes: ['nickname'], 
+            where : {token: req.body.token}
+        })
         if(userInfo) {
-            let LikeList = await LIKE.findOne({
+            let likeRestaurantList = await LIKE.findAll({
+                attributes: ['r_code'], 
                 where : {token: req.body.token}
             })
+            let likeList = [];
+            for (const key in likeRestaurantList){
+                restaurantInfo = await RESTAURANT.findOne({
+                    where : {r_code: key}
+                    })
+                likeList.push({
+                        restaurant_name: restaurantInfo.r_name, 
+                        img: restaurantInfo.image,
+                        address: restaurantInfo.address,
+                        star:restaurantInfo.stars,
+                        options: {
+                         takeout: restaurantInfo.takeout,
+                         parking: restaurantInfo.parking,
+                       }
+                })
+            }
             res.send({
                 status: 200, 
                 data: {
-                    nickname: userInfo.dataValue.nickname, 
-                    like_list: [
-                        {
-                            restaurant_name: "", 
-                            img: "image url", 
-                            address: "", 
-                            star: 0, 
-                            options: {
-                                takeout: false, 
-                                parking: false
-                            }
-                        }
-                    ]                   
+                    nickname: userNickname, 
+                    like_list: likeList                  
                 }
             })
         }
