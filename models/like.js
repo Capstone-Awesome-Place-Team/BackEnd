@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class USER extends Model {
+  class LIKE extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,44 +11,29 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      models.USER.hasMany(models.LIKE, { foreignKey : 'token', sourceKey : 'token'});
+      models.LIKE.belongsTo(models.USER, {foreignKey : 'token', targetKey : 'token'});
+      models.LIKE.belongsTo(models.RESTAURANT, {foreignKey : 'r_code', targetKey : 'r_code'});
     }
   }
-  USER.init({
+  LIKE.init({
     token: {
+      primaryKey: true, 
       type: DataTypes.STRING(255),
-      defaultValue: null, 
       unique: false
     }, 
-    id: {
+    r_code: {
       primaryKey: true, 
-      type: DataTypes.STRING(15),
-      unique: false, 
-      allowNull: false
-    }, 
-    pw: {
-      type: DataTypes.STRING(255), 
-      allowNull: false
-    }, 
-    salt: {
-      type: DataTypes.BIGINT, 
-      allowNull: false
-    },
-    nickname: {
-      type: DataTypes.STRING(15), 
-      allowNull: false, 
-      defaultValue: "unknown"
+      type: DataTypes.INTEGER,
+      unique: false
     }
-  }, 
-  {
+  }, {
     sequelize, 
     timestamps: false, 
     freezeTableName: true, 
-    modelName: 'USER',
+    modelName: 'LIKE',
     paranoid: false, 
     charset: 'utf8',
     collate: 'utf8_general_ci'
   });
-  return USER;
-  
+  return LIKE;
 };
