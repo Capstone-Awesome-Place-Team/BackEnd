@@ -7,5 +7,7 @@ var userController = require('../controllers/UserController')
 
 router.post('/signup', userController.Signup); //회원가입 url 매핑
 router.get('/mypage', userController.Mypage); //마이페이지 url 매핑
+router.post('/like', LikeController.Like); //찜하기 url 매핑
+router.delete('/like', LikeController.Like); //찜취소 url 매핑
 
 module.exports = router;
