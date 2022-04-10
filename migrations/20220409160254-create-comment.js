@@ -12,9 +12,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      nickname: {
+      id: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING(15)
       },
       comment_title: {
         allowNull: false,

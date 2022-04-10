@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class COMMENT extends Model {
     static associate(models) {
       models.COMMENT.belongsTo(models.RESTAURANT, {foreignKey : 'r_code', targetKey : 'r_code'});
-      models.COMMENT.belongsTo(models.USER, {foreignKey : 'nickname', targetKey : 'nickname'});
+      models.COMMENT.belongsTo(models.USER, {foreignKey : 'id', targetKey : 'id'});
     }
   }
   COMMENT.init({
@@ -20,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.INTEGER
     },
-    nickname: {
+    id: {
       allowNull: false,
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING(15)
     },
     comment_title: {
       allowNull: false,
