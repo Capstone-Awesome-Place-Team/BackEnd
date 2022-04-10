@@ -5,14 +5,14 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class LIKE extends Model {
     static associate(models) {
-      models.LIKE.belongsTo(models.USER, {foreignKey : 'token', targetKey : 'token'});
+      models.LIKE.belongsTo(models.USER, {foreignKey : 'id', targetKey : 'id'});
       models.LIKE.belongsTo(models.RESTAURANT, {foreignKey : 'r_code', targetKey : 'r_code'});
     }
   }
   LIKE.init({
-    token: {
+    id: {
       primaryKey: true, 
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(15),
       unique: true
     }, 
     r_code: {

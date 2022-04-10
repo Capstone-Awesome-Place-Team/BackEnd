@@ -5,7 +5,7 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class USER extends Model {
     static associate(models) {
-      models.USER.hasMany(models.LIKE, { foreignKey : 'token', sourceKey : 'token'});
+      models.USER.hasMany(models.LIKE, { foreignKey : 'id', sourceKey : 'id'});
       models.USER.hasMany(models.COMMENT, { foreignKey : 'nickname', sourceKey : 'nickname'});
     }
   }

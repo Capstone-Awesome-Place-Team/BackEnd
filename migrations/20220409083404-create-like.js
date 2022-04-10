@@ -2,9 +2,9 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('LIKE', {
-      token: {
+      id: {
         primaryKey: true, 
-        type: Sequelize.STRING(255),
+        type: Sequelize.STRING(15),
         unique: true
       }, 
       r_code: {
