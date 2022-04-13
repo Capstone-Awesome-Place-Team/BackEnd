@@ -9,7 +9,7 @@ module.exports = {
         unique: true
       },
       theme_content: {
-        type: Sequelize.STRING(45)
+        type: Sequelize.STRING(255)
       },
       r_code: {
         type: Sequelize.INTEGER
