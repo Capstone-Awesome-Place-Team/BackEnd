@@ -17,7 +17,7 @@ module.exports = {
         allowNull: false
       },
       gu: {
-        type: Sequelize.STRING(3),
+        type: Sequelize.STRING(4),
       },
       address: {
         type: Sequelize.STRING(255),
