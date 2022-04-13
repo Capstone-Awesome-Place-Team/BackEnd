@@ -5,12 +5,12 @@ module.exports = {
       token: {
         type: Sequelize.STRING(255),
         defaultValue: null, 
-        unique: false
+        unique: true
       }, 
       id: {
         primaryKey: true, 
         type: Sequelize.STRING(15),
-        unique: false, 
+        unique: true, 
         allowNull: false
       }, 
       pw: {
@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       }, 
       salt: {
-        type: Sequelize.INTEGER, 
+        type: Sequelize.BIGINT, 
         allowNull: false
       }, 
       nickname: {
