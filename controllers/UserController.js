@@ -3,11 +3,17 @@ const USER = require('../models/').USER;
 const RESTAURANT = require('../models/').RESTAURANT;
 const LIKE = require('../models/').LIKE;
 
-
 const Views = '../views'
 
+const bodyParser = require('body-parser');
 //해시 암호화 내장 모듈
 const crypto = require('crypto');
+
+//JWT
+require("dotenv").config({});
+const jwt = require('jsonwebtoken');
+const { verifyToken } = require('./middlewares');
+
 
 //회원가입
 exports.Signup = async function(req, res) {
@@ -36,7 +42,7 @@ exports.Signup = async function(req, res) {
                     });
                 })
                 .catch((err) => {
-                    res.status(400).json({
+                    res.status(500).json({
                         error: err
                     });
                 });
@@ -48,6 +54,48 @@ exports.Signup = async function(req, res) {
                 error: '회원가입 중 오류 발생했습니다. '
             })
     }
+}
+  
+exports.Signin = async function(req, res, next) {
+    try {
+        let body = req.body;
+        let result = await USER.findOne({where : {id : req.body.id} });
+        if(!result) {
+            res.status(400).json({
+                message: "존재하지 않는 아이디 입니다."
+            });
+            return;
+        }
+        let db_pw = result.dataValues.pw;
+        let salt = result.dataValues.salt;
+        let hash_pw = crypto.createHash("sha512").update(body.pw + salt).digest("hex");
+  
+        if (db_pw === hash_pw) {
+            //토큰 생성
+            let token = jwt.sign({ id: body.id }, 
+                process.env.JWT_SECRET, 
+                { expiresIn: '30m' //유효 기간
+            })
+            USER.update({
+                token : token
+            }, { where : {
+                id : body.id
+            }
+            })
+            .catch((err) => {
+                res.status(500).json({
+                    error: err
+                });
+            });
+            res.status(200).json({
+                message : "로그인에 성공하였습니다", 
+                token
+            });
+        } else { 
+            res.status(500).json({ message: "잘못된 비밀번호 입니다" });
+        } 
+        next();
+    } catch (error) { console.error("알 수 없는 에러입니다:", error.message ) }
 }
 
 exports.Mypage = async function(req, res) {
@@ -72,14 +120,15 @@ exports.Mypage = async function(req, res) {
                     where : {r_code: key}
                     })
                 likeList.push({
-                        restaurant_name: restaurantInfo.r_name, 
-                        img: restaurantInfo.image,
-                        address: restaurantInfo.address,
-                        star:restaurantInfo.stars,
-                        options: {
-                            takeout: restaurantInfo.takeout,
-                            parking: restaurantInfo.parking,
-                       }
+                    r_code: restaurantInfo.r_code, 
+                    restaurant_name: restaurantInfo.r_name, 
+                    img: restaurantInfo.image,
+                    address: restaurantInfo.address,
+                    star:restaurantInfo.stars,
+                    options: {
+                        takeout: restaurantInfo.takeout,
+                        parking: restaurantInfo.parking,
+                    }
                 })
             }
             res.status(200).json({ 
