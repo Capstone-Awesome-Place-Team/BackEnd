@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 5000; //포트 번호
-const router = require('./routes/routes')
+const router = require('./routes/routes');
 const cors = require('cors'); //npm i cors : cors 미들웨어 설치
 
 //테스트용 view를 실행시키기 위한 코드들
@@ -36,7 +36,9 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.get('/signup', (req, res) => {
 	res.render('signup');
 })
-
-app.use('/signup', router)
+app.get('/signin', (req, res) => {
+	res.render('signin');
+})
+app.use('/', router)
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //포트 응답 확인
