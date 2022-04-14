@@ -41,9 +41,6 @@ app.get('/signin', (req, res) => {
 	res.render('signin');
 })
 
-app.get('/mypage', (req, res) => {
-	res.render('mypage');
-})
 app.use('/', router)
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //포트 응답 확인
