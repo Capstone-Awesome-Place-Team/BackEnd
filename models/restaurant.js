@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     gu: {
-      type: DataTypes.STRING(3),
+      type: DataTypes.STRING(4),
     },
     address: {
       type: DataTypes.STRING(255),

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     }, 
     theme_content: {
-      type: DataTypes.STRING(45)
+      type: DataTypes.STRING(255)
     },
     r_code: {
       type: DataTypes.INTEGER
