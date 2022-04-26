@@ -9,11 +9,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   THEME.init({
-    theme_title: {
+    theme_code: {
       primaryKey: true, 
+      type: DataTypes.INTEGER, 
+      allowNull: false, 
+      autoIncrement: true, 
+      unique: true
+    }, 
+    theme_title: {
       type: DataTypes.STRING(45), 
       allowNull: false, 
-      unique: true
+      unique: false
     }, 
     theme_content: {
       type: DataTypes.STRING(255)

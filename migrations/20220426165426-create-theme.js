@@ -2,11 +2,17 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('THEME', {
-      theme_title: {
+      theme_code: {
         primaryKey: true, 
+        type: Sequelize.INTEGER, 
+        autoIncrement: true, 
+        allowNull: false, 
+        unique: true
+      }, 
+      theme_title: {
         allowNull: false, 
         type: Sequelize.STRING(45), 
-        unique: true
+        unique: false
       },
       theme_content: {
         type: Sequelize.STRING(255)
@@ -20,6 +26,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('THEME');
+    await queryInterface.dropTable('THEMEs');
   }
 };
