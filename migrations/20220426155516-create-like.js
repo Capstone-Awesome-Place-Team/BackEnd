@@ -5,12 +5,12 @@ module.exports = {
       id: {
         primaryKey: true, 
         type: Sequelize.STRING(15),
-        unique: true
+        unique: false
       }, 
-      r_code: {
+      r_code: { 
         primaryKey: true, 
         type: Sequelize.INTEGER,
-        unique: true
+        unique: false
       }
     });
   },

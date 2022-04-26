@@ -13,12 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     id: {
       primaryKey: true, 
       type: DataTypes.STRING(15),
-      unique: true
+      unique: false
     }, 
-    r_code: {
+    r_code: { 
       primaryKey: true, 
       type: DataTypes.INTEGER,
-      unique: true
+      unique: false
     }
   }, {
     sequelize, 
