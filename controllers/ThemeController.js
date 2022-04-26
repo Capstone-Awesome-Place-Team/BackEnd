@@ -22,23 +22,26 @@ exports.Main = async function(req, res) {
 //테마별추천페이지 음식점 정보불러오기
 exports.Theme_list = async function(req, res) {
     try {
-        let themeInfo = await THEME.findAll({
+        let themeInfo = await THEME.findOne({
             attributes: ['theme_title', 'theme_content'], 
             where : {
                 theme_title : req.params.theme_title
-            }, 
-            row:true
+            }
         })
+        console.log("THEME INFO IS"+themeInfo);
         let themeRestaurantList = await THEME.findAll({
             attributes: ['r_code', 'restaurant_intro'], 
             where : {theme_title : req.params.theme_title}, 
             row: true
         })
+        console.log(themeRestaurantList);
         let themeList = [];
             //받은 r_code 리스트로 해당 음식점 정보 리스트 받아오기
-        for (const key in themeRestaurantList){
+        for (const key of themeRestaurantList){
+            console.log(key.dataValues.r_code);
+
             restaurantInfo = await RESTAURANT.findOne({
-                where : {r_code: key.r_code}
+                where : {r_code: key.dataValues.r_code}
                 })
             themeList.push({
                 r_code: restaurantInfo.r_code, 
@@ -46,7 +49,7 @@ exports.Theme_list = async function(req, res) {
                 img: restaurantInfo.image,
                 address: restaurantInfo.address,
                 star: restaurantInfo.stars,
-                intro: key.restaurant_intro, 
+                intro: key.dataValues.restaurant_intro, 
                 options: {
                     takeout: restaurantInfo.takeout,
                     parking: restaurantInfo.parking,
