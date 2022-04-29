@@ -89,7 +89,7 @@ exports.Signin = async function (req, res, next) {
     if (db_pw === hash_pw) {
       //토큰 생성
       let token = jwt.sign({ id: body.id }, process.env.JWT_SECRET, {
-        //유효 기간
+        //유효 기간 X
       });
       USER.update(
         {
@@ -120,51 +120,37 @@ exports.Signin = async function (req, res, next) {
 
 exports.Mypage = async function (req, res) {
   try {
-    if (req.headers.authorization) {
-      let token = req.headers.authorization.split("Bearer ")[1];
-
-      jwt.verify(token, process.env.JWT_SECRET, (err) => {
-        if (err) {
-          res.status(401).json({ error: "유효하지 않은 토큰입니다." });
-        } else {
-          next();
-        }
-      });
-    } else {
-      res.status(401).json({ error: "유효하지 않은 토큰입니다." });
-    }
     //요청 헤더 내의 authorization 헤더에서 토큰 추출
     let token = req.headers.authorization.split("Bearer ")[1];
     //해당 user의 nickname 받아오기
-    let userNickname = await USER.findOne({
-      attributes: ["nickname"],
-      where: { token: token },
+    let result = await USER.findOne({
+      where: { token: token }
     });
-    if (userNickname) {
+    if (result) {
       //user가 찜한 음식점의 r_code 받아오기
       let likeRestaurantList = await LIKE.findAll({
         attributes: ["r_code"],
-        where: { token: token },
+        where: { id: result.dataValues.id }
       });
       let likeList = [];
       //받은 r_code 리스트로 해당 음식점 정보 리스트 받아오기
-      for (const key in likeRestaurantList) {
-        restaurantInfo = await RESTAURANT.findOne({
-          where: { r_code: key },
+      for (const key of likeRestaurantList) {
+            restaurantInfo = await RESTAURANT.findOne({
+            where: { r_code: key.dataValues.r_code }
         });
         likeList.push({
-          r_code: restaurantInfo.r_code,
-          restaurant_name: restaurantInfo.r_name,
-          img: restaurantInfo.image,
-          address: restaurantInfo.address,
-          star: restaurantInfo.stars,
-          options: {
-            takeout: restaurantInfo.takeout,
-            parking: restaurantInfo.parking,
-          },
+            r_code: restaurantInfo.r_code,
+            restaurant_name: restaurantInfo.r_name,
+            img: restaurantInfo.image,
+            address: restaurantInfo.address,
+            star: restaurantInfo.stars,
+            options: {
+                takeout: restaurantInfo.takeout,
+                parking: restaurantInfo.parking,
+            },
         });
       }
-      let nickname = userNickname.nickname;
+      let nickname = result.dataValues.nickname;
       res.status(200).json({
         nickname: nickname,
         like_list: likeList,
