@@ -89,7 +89,7 @@ exports.Signin = async function (req, res, next) {
     if (db_pw === hash_pw) {
       //토큰 생성
       let token = jwt.sign({ id: body.id }, process.env.JWT_SECRET, {
-        expiresIn: "30m", //유효 기간
+        //유효 기간
       });
       USER.update(
         {
@@ -120,6 +120,19 @@ exports.Signin = async function (req, res, next) {
 
 exports.Mypage = async function (req, res) {
   try {
+    if (req.headers.authorization) {
+      let token = req.headers.authorization.split("Bearer ")[1];
+
+      jwt.verify(token, process.env.JWT_SECRET, (err) => {
+        if (err) {
+          res.status(401).json({ error: "유효하지 않은 토큰입니다." });
+        } else {
+          next();
+        }
+      });
+    } else {
+      res.status(401).json({ error: "유효하지 않은 토큰입니다." });
+    }
     //요청 헤더 내의 authorization 헤더에서 토큰 추출
     let token = req.headers.authorization.split("Bearer ")[1];
     //해당 user의 nickname 받아오기
@@ -166,4 +179,64 @@ exports.Mypage = async function (req, res) {
   }
 };
 
-exports.edit_User = function (req, res) {};
+exports.UserEdit = async function (req, res) {
+  try {
+    if (req.headers.authorization) {
+      let token = req.headers.authorization.split("Bearer ")[1];
+
+      jwt.verify(token, process.env.JWT_SECRET, (err) => {
+        if (err) {
+          res.status(401).json({ error: "유효하지 않은 토큰입니다." });
+        } else {
+          next();
+        }
+      });
+    } else {
+      res.status(401).json({ error: "유효하지 않은 토큰입니다." });
+    }
+
+    let pwCheck = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])([A-Za-z0-9+]){8,15}$/; //영대소문자, 숫자 조합 최소 8자 최대 15자
+    let nicknameCheck = /^[가-힣A-Za-z0-9+]{1,15}$/; //한글, 영대소문자, 숫자 최대 15글자
+    if (!pwCheck.test(req.body.pw)) {
+      return res.status(400).json({ error: "비밀번호 양식이 다릅니다. " });
+    }
+    if (!nicknameCheck.test(req.body.nickname)) {
+      return res.status(400).json({ error: "닉네임 양식이 다릅니다. " });
+    }
+    //해시 암호화
+    let salt_value = Math.round(new Date().valueOf() * Math.random()) + "";
+    let hash_pw = crypto
+      .createHash("sha512")
+      .update(req.body.pw + salt_value)
+      .digest("hex");
+    await USER.findOne({ where: { nickname: req.body.nickname } }).then(
+      (data) => {
+        if (data) {
+          res.status(409).json({
+            error: "이미 존재하는 닉네임입니다.",
+          });
+        } else {
+          USER.update({
+            nickname: req.body.nickname,
+            pw: hash_pw,
+          })
+            .then((result) => {
+              res.status(201).json({
+                message: "개인 정보 수정 성공",
+              });
+            })
+            .catch((err) => {
+              res.status(500).json({
+                error: err,
+              });
+            });
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error: "수정 중 오류 발생했습니다. ",
+    });
+  }
+};
