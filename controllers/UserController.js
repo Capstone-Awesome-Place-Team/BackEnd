@@ -17,9 +17,9 @@ const { verifyToken } = require("./middlewares");
 //회원가입
 exports.Signup = async function (req, res) {
   try {
-    let idCheck = /^[A-Za-z0-9+]{1,15}$/; //영대소문자, 숫자 최대 15글자
-    let pwCheck = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])([A-Za-z0-9+]){8,15}$/; //영대소문자, 숫자 조합 최소 8자 최대 15자
-    let nicknameCheck = /^[가-힣A-Za-z0-9+]{1,15}$/; //한글, 영대소문자, 숫자 최대 15글자
+    let idCheck = /^[0-9a-zA-Z]{1,15}$/g; //영대소문자, 숫자 최대 15글자
+    let pwCheck = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])([a-zA-Z0-9]){8,15}$/g; //영대소문자, 숫자 조합 최소 8자 최대 15자
+    let nicknameCheck = /^[0-9a-zA-Z가-힣]{1,15}$/g; //한글, 영대소문자, 숫자 최대 15글자
     if (!idCheck.test(req.body.id)) {
       return res.status(400).json({ error: "아이디 양식이 다릅니다. " });
     }
