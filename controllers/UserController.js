@@ -181,19 +181,7 @@ exports.Mypage = async function (req, res) {
 
 exports.UserEdit = async function (req, res) {
   try {
-    if (req.headers.authorization) {
-      let token = req.headers.authorization.split("Bearer ")[1];
-
-      jwt.verify(token, process.env.JWT_SECRET, (err) => {
-        if (err) {
-          res.status(401).json({ error: "유효하지 않은 토큰입니다." });
-        } else {
-          next();
-        }
-      });
-    } else {
-      res.status(401).json({ error: "유효하지 않은 토큰입니다." });
-    }
+    let token = req.headers.authorization.split("Bearer ")[1];
 
     let pwCheck = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])([A-Za-z0-9+]){8,15}$/; //영대소문자, 숫자 조합 최소 8자 최대 15자
     let nicknameCheck = /^[가-힣A-Za-z0-9+]{1,15}$/; //한글, 영대소문자, 숫자 최대 15글자
@@ -216,10 +204,14 @@ exports.UserEdit = async function (req, res) {
             error: "이미 존재하는 닉네임입니다.",
           });
         } else {
-          USER.update({
-            nickname: req.body.nickname,
-            pw: hash_pw,
-          })
+          USER.update(
+            {
+              nickname: req.body.nickname,
+              pw: hash_pw,
+              salt: salt_value,
+            },
+            { where: { token: token } }
+          )
             .then((result) => {
               res.status(201).json({
                 message: "개인 정보 수정 성공",
