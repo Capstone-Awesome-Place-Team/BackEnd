@@ -10,9 +10,11 @@ exports.Main = async function(req, res) {
                 attributes: [sequelize.fn('DISTINCT', sequelize.col('theme_title')), 'theme_title', 'theme_img']
             })
         console.log(themeInfo);
-        res.status(200).json({
-            themeInfo
-        })
+        let themeList = [...themeInfo];
+
+        res.status(200).json(
+            themeList
+        )
     } catch (error) {
         console.log(error);
         res.status(400).json({
