@@ -5,8 +5,9 @@ const sequelize = require('sequelize');
 //메인 정보불러오기
 exports.Main = async function(req, res) {
     try { 
+        console.log(sequelize.fn);
         let themeInfo = await THEME.findAll({
-                attributes: ['theme_title', 'theme_img', sequelize.fn('DISTINCT', Sequelize.col('theme_title'))]
+                attributes: [sequelize.fn('DISTINCT', sequelize.col('theme_title')), 'theme_title', 'theme_img']
             })
         console.log(themeInfo);
         res.status(200).json({
