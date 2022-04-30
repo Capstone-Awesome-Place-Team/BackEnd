@@ -14,6 +14,11 @@ module.exports = {
         type: Sequelize.STRING(45), 
         unique: false
       },
+      theme_img: {
+        type: Sequelize.STRING(255), 
+        allowNull: true, 
+        unique: false
+      }, 
       theme_content: {
         type: Sequelize.STRING(255)
       },
