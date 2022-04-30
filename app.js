@@ -2,7 +2,7 @@ const fs = require("fs");
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const port = process.env.PORT || 5000; //포트 번호
+const port = process.env.PORT || 80; //포트 번호
 const router = require("./routes/routes");
 const cors = require("cors"); //npm i cors : cors 미들웨어 설치
 

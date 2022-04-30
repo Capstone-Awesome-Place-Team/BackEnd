@@ -17,9 +17,9 @@ const { verifyToken } = require("./middlewares");
 //회원가입
 exports.Signup = async function (req, res) {
   try {
-    let idCheck = /^[A-Za-z0-9+]{1,15}$/; //영대소문자, 숫자 최대 15글자
-    let pwCheck = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])([A-Za-z0-9+]){8,15}$/; //영대소문자, 숫자 조합 최소 8자 최대 15자
-    let nicknameCheck = /^[가-힣A-Za-z0-9+]{1,15}$/; //한글, 영대소문자, 숫자 최대 15글자
+    let idCheck = /^[0-9a-zA-Z]{1,15}$/g; //영대소문자, 숫자 최대 15글자
+    let pwCheck = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])([a-zA-Z0-9]){8,15}$/g; //영대소문자, 숫자 조합 최소 8자 최대 15자
+    let nicknameCheck = /^[0-9a-zA-Z가-힣]{1,15}$/g; //한글, 영대소문자, 숫자 최대 15글자
     if (!idCheck.test(req.body.id)) {
       return res.status(400).json({ error: "아이디 양식이 다릅니다. " });
     }
@@ -89,7 +89,7 @@ exports.Signin = async function (req, res, next) {
     if (db_pw === hash_pw) {
       //토큰 생성
       let token = jwt.sign({ id: body.id }, process.env.JWT_SECRET, {
-        //유효 기간
+        //유효 기간 X
       });
       USER.update(
         {
@@ -120,37 +120,23 @@ exports.Signin = async function (req, res, next) {
 
 exports.Mypage = async function (req, res) {
   try {
-    if (req.headers.authorization) {
-      let token = req.headers.authorization.split("Bearer ")[1];
-
-      jwt.verify(token, process.env.JWT_SECRET, (err) => {
-        if (err) {
-          res.status(401).json({ error: "유효하지 않은 토큰입니다." });
-        } else {
-          next();
-        }
-      });
-    } else {
-      res.status(401).json({ error: "유효하지 않은 토큰입니다." });
-    }
     //요청 헤더 내의 authorization 헤더에서 토큰 추출
     let token = req.headers.authorization.split("Bearer ")[1];
     //해당 user의 nickname 받아오기
-    let userNickname = await USER.findOne({
-      attributes: ["nickname"],
+    let result = await USER.findOne({
       where: { token: token },
     });
-    if (userNickname) {
+    if (result) {
       //user가 찜한 음식점의 r_code 받아오기
       let likeRestaurantList = await LIKE.findAll({
         attributes: ["r_code"],
-        where: { token: token },
+        where: { id: result.dataValues.id },
       });
       let likeList = [];
       //받은 r_code 리스트로 해당 음식점 정보 리스트 받아오기
-      for (const key in likeRestaurantList) {
+      for (const key of likeRestaurantList) {
         restaurantInfo = await RESTAURANT.findOne({
-          where: { r_code: key },
+          where: { r_code: key.dataValues.r_code },
         });
         likeList.push({
           r_code: restaurantInfo.r_code,
@@ -164,7 +150,7 @@ exports.Mypage = async function (req, res) {
           },
         });
       }
-      let nickname = userNickname.nickname;
+      let nickname = result.dataValues.nickname;
       res.status(200).json({
         nickname: nickname,
         like_list: likeList,
@@ -182,9 +168,8 @@ exports.Mypage = async function (req, res) {
 exports.UserEdit = async function (req, res) {
   try {
     let token = req.headers.authorization.split("Bearer ")[1];
-
-    let pwCheck = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])([A-Za-z0-9+]){8,15}$/; //영대소문자, 숫자 조합 최소 8자 최대 15자
-    let nicknameCheck = /^[가-힣A-Za-z0-9+]{1,15}$/; //한글, 영대소문자, 숫자 최대 15글자
+    let pwCheck = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])([a-zA-Z0-9]){8,15}$/g; //영대소문자, 숫자 조합 최소 8자 최대 15자
+    let nicknameCheck = /^[0-9a-zA-Z가-힣]{1,15}$/g; //한글, 영대소문자, 숫자 최대 15글자
     if (!pwCheck.test(req.body.pw)) {
       return res.status(400).json({ error: "비밀번호 양식이 다릅니다. " });
     }
