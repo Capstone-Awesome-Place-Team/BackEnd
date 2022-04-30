@@ -1,5 +1,6 @@
 const THEME = require('../models/').THEME;
 const RESTAURANT = require('../models/').RESTAURANT;
+const sequelize = require('sequelize');
 
 //메인 정보불러오기
 exports.Main = async function(req, res) {
