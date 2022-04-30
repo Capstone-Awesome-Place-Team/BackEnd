@@ -5,7 +5,7 @@ const RESTAURANT = require('../models/').RESTAURANT;
 exports.Main = async function(req, res) {
     try { 
         let themeInfo = await THEME.findAll({
-                attributes: ['theme_title', 'theme_img']
+                attributes: ['theme_title', 'theme_img', sequelize.fn('DISTINCT', Sequelize.col('theme_title'))]
             })
         console.log(themeInfo);
         res.status(200).json({
