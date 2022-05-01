@@ -165,6 +165,7 @@ exports.Mypage = async function (req, res) {
   }
 };
 
+////
 exports.UserEdit = async function (req, res) {
   try {
     let token = req.headers.authorization.split("Bearer ")[1];
@@ -182,7 +183,7 @@ exports.UserEdit = async function (req, res) {
       .createHash("sha512")
       .update(req.body.pw + salt_value)
       .digest("hex");
-    
+
     USER.update(
       {
         nickname: req.body.nickname,
@@ -191,16 +192,16 @@ exports.UserEdit = async function (req, res) {
       },
       { where: { token: token } }
     )
-    .then((result) => {
-      res.status(201).json({
-        message: "개인 정보 수정 성공",
+      .then((result) => {
+        res.status(201).json({
+          message: "개인 정보 수정 성공",
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          error: err,
+        });
       });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        error: err,
-      });
-    });
   } catch (error) {
     console.log(error);
     res.status(400).json({
