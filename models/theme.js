@@ -21,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false, 
       unique: false
     }, 
+    theme_img: {
+      type: DataTypes.STRING(255), 
+      allowNull: true, 
+      unique: false
+    }, 
     theme_content: {
       type: DataTypes.STRING(255)
     },

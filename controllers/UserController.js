@@ -182,34 +182,25 @@ exports.UserEdit = async function (req, res) {
       .createHash("sha512")
       .update(req.body.pw + salt_value)
       .digest("hex");
-    await USER.findOne({ where: { nickname: req.body.nickname } }).then(
-      (data) => {
-        if (data) {
-          res.status(409).json({
-            error: "이미 존재하는 닉네임입니다.",
-          });
-        } else {
-          USER.update(
-            {
-              nickname: req.body.nickname,
-              pw: hash_pw,
-              salt: salt_value,
-            },
-            { where: { token: token } }
-          )
-            .then((result) => {
-              res.status(201).json({
-                message: "개인 정보 수정 성공",
-              });
-            })
-            .catch((err) => {
-              res.status(500).json({
-                error: err,
-              });
-            });
-        }
-      }
-    );
+    
+    USER.update(
+      {
+        nickname: req.body.nickname,
+        pw: hash_pw,
+        salt: salt_value,
+      },
+      { where: { token: token } }
+    )
+    .then((result) => {
+      res.status(201).json({
+        message: "개인 정보 수정 성공",
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err,
+      });
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({
