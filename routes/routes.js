@@ -5,6 +5,7 @@ const req = require("express/lib/request");
 var UserController = require("../controllers/UserController");
 var LikeController = require("../controllers/LikeController");
 var ThemeController = require("../controllers/ThemeController");
+var RestaurantController = require("../controllers/RestaurantController");
 //controller 읽기
 
 router.post("/signup", UserController.Signup); //회원가입 url 매핑
@@ -15,5 +16,5 @@ router.post("/like", LikeController.Like); //찜하기 url 매핑
 router.delete("/like", LikeController.Like); //찜취소 url 매핑
 router.get("/main", ThemeController.Main); //메인정보불러오기 url 매핑
 router.get("/theme_list/:theme_title", ThemeController.Theme_list); //테마별추천페이지 음식점 정보불러오기 url 매핑
-
+router.post("/category", RestaurantController.Category); //카테고리 url 매핑
 module.exports = router;
