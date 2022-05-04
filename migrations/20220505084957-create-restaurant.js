@@ -32,7 +32,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       stars: {
-        type: Sequelize.INTEGER
+        type: Sequelize.FLOAT(3,2)
       },
       parking: {
         type: Sequelize.BOOLEAN

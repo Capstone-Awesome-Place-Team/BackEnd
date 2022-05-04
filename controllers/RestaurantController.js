@@ -1,7 +1,10 @@
 const RESTAURANT = require('../models/').RESTAURANT;
 const COMMENT = require('../models/').COMMENT;
+const LIKE = require('../models/').LIKE;
+const USER = require('../models/').USER;
 const sequelize = require('sequelize');
 const { Op } = require("sequelize");
+const { Like } = require('./LikeController');
 
 exports.Category = async function (req, res) {
     try {
@@ -92,11 +95,11 @@ exports.Category = async function (req, res) {
             let comment = await COMMENT.findOne({
                 attributes: [ [sequelize.fn('COUNT', sequelize.col('c_code')), 'comment_count'] ], 
                 where: { r_code: key.dataValues.r_code }
-            });          
+            });
             result.push({
                 r_code: key.dataValues.r_code,
                 restaurant_name: key.dataValues.r_name,
-                img: key.dataValues.image,
+                img: key.dataValues.image.split('"')[1], 
                 address: key.dataValues.address,
                 star: key.dataValues.stars,
                 comment_count: comment.dataValues.comment_count, 
@@ -114,6 +117,93 @@ exports.Category = async function (req, res) {
         console.log(error);
         res.status(400).json({
             error: "카테고리 로딩중 오류가 발생했습니다. ",
+        });
+    }
+};
+
+exports.RestaurantDetail = async function (req, res) {
+    try {
+        let token = req.headers.authorization.split("Bearer ")[1];
+        //해당 user의 nickname 받아오기
+        let userid = await USER.findOne({
+            attribute: ['id'], 
+            where: { token: token }
+        });
+        let like = false;
+        await LIKE.findOne({
+            where: { id: userid.dataValues.id , r_code: req.params.r_code}
+        })
+        .then((result) => {
+            if(result == null){
+                like = false;
+            } else {
+                like = true;
+            }
+        })
+        let comments = [];
+        restaurantInfo = await RESTAURANT.findOne({
+            attributes: [ 'r_code', 'r_name', 'image', 'address', 'stars', 'price', 'takeout', 'parking' ], 
+            where: { r_code: req.params.r_code}
+        });
+        let img_list = [];
+        img_list.push(restaurantInfo.dataValues.image.split('"')[1]);
+        img_list.push(restaurantInfo.dataValues.image.split('"')[3]);
+        let commentList = await COMMENT.findAll({
+            attributes: [ 'id', 'comment_title', 'comment_content', 'star', [ sequelize.fn("DATE_FORMAT", sequelize.col('createdAt'), "%m/%d"), 'createdAt']], 
+            where: { r_code: req.params.r_code }
+        });
+        let comment = await COMMENT.findOne({
+            attributes: [ 'comment_title', 'comment_content', 'star', [ sequelize.fn("DATE_FORMAT", sequelize.col('createdAt'), "%m/%d"), 'createdAt']], 
+            where: { id: userid.dataValues.id, r_code: req.params.r_code }
+        })
+        let mycomment;
+        if(comment != null){
+            mycomment = {
+                star: comment.dataValues.star, 
+                title: comment.dataValues.comment_title, 
+                content: comment.dataValues.comment_content, 
+                time: comment.dataValues.createdAt
+            }
+        } else {
+            mycomment = {
+                star: 0, 
+                title: "", 
+                content: "", 
+                time: ""
+            };
+        }
+        for (const key of commentList) {
+            let nickname = await USER.findOne({
+                attribute: ['nickname'], 
+                where: { id: key.dataValues.id } 
+            });
+            comments.push({
+                nickname: nickname.dataValues.nickname, 
+                star: key.dataValues.star,
+                title: key.dataValues.comment_title, 
+                content: key.dataValues.comment_content, 
+                time: key.dataValues.createdAt
+            });
+        };
+        res.status(200).json({
+            r_code: restaurantInfo.dataValues.r_code,
+            restaurant_name: restaurantInfo.dataValues.r_name,
+            img_list: img_list,
+            address: restaurantInfo.dataValues.address,
+            like: like, 
+            star: restaurantInfo.dataValues.stars,
+            price: restaurantInfo.dataValues.price, 
+            options: {
+                takeout: restaurantInfo.dataValues.takeout,
+                parking: restaurantInfo.dataValues.parking,
+            }, 
+            comments, 
+            mycomment
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            error: "상세페이지 로딩중 오류가 발생했습니다. ",
         });
     }
 };

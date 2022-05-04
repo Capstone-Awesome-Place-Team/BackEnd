@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING
     }, 
+    star: {
+      allowNull: false, 
+      type: DataTypes.FLOAT(3,2)
+    }, 
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE
