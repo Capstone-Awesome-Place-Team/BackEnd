@@ -24,6 +24,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       }, 
+      star: {
+        allowNull: false, 
+        type: Sequelize.FLOAT(3,2)
+      }, 
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

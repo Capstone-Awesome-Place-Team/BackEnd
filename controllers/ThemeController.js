@@ -50,7 +50,7 @@ exports.Theme_list = async function(req, res) {
             themeList.push({
                 r_code: restaurantInfo.r_code, 
                 restaurant_name: restaurantInfo.r_name, 
-                img: restaurantInfo.image,
+                img: restaurantInfo.image.split('"')[1],
                 address: restaurantInfo.address,
                 star: restaurantInfo.stars,
                 intro: key.dataValues.restaurant_intro, 

@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
     },
     stars: { 
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT(3,2)
     },
     parking: {
       type: DataTypes.BOOLEAN,
