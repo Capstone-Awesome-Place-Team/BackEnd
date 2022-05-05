@@ -99,7 +99,7 @@ exports.Category = async function (req, res) {
             result.push({
                 r_code: key.dataValues.r_code,
                 restaurant_name: key.dataValues.r_name,
-                img: key.dataValues.image.split('"')[1], 
+                img: key.dataValues.image.split(' ')[0], 
                 address: key.dataValues.address,
                 star: key.dataValues.stars,
                 comment_count: comment.dataValues.comment_count, 
@@ -145,9 +145,7 @@ exports.RestaurantDetail = async function (req, res) {
             attributes: [ 'r_code', 'r_name', 'image', 'address', 'stars', 'price', 'takeout', 'parking' ], 
             where: { r_code: req.params.r_code}
         });
-        let img_list = [];
-        img_list.push(restaurantInfo.dataValues.image.split('"')[1]);
-        img_list.push(restaurantInfo.dataValues.image.split('"')[3]);
+        let img_list = restaurantInfo.dataValues.image.split(' ');
         let commentList = await COMMENT.findAll({
             attributes: [ 'id', 'comment_title', 'comment_content', 'star', [ sequelize.fn("DATE_FORMAT", sequelize.col('createdAt'), "%m/%d"), 'createdAt']], 
             where: { r_code: req.params.r_code }
