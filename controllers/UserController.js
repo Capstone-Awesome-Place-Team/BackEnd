@@ -141,7 +141,7 @@ exports.Mypage = async function (req, res) {
         likeList.push({
             r_code: restaurantInfo.r_code,
             restaurant_name: restaurantInfo.r_name,
-            img: restaurantInfo.image,
+            img: restaurantInfo.image.split(' ')[0],
             address: restaurantInfo.address,
             star: restaurantInfo.stars,
             options: {

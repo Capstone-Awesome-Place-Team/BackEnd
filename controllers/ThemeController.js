@@ -50,7 +50,7 @@ exports.Theme_list = async function(req, res) {
             themeList.push({
                 r_code: restaurantInfo.r_code, 
                 restaurant_name: restaurantInfo.r_name, 
-                img: restaurantInfo.image.split('"')[1],
+                img: restaurantInfo.image.split(' ')[0],
                 address: restaurantInfo.address,
                 star: restaurantInfo.stars,
                 intro: key.dataValues.restaurant_intro, 
@@ -60,11 +60,19 @@ exports.Theme_list = async function(req, res) {
                 }
             })
         }
-        res.status(200).json({ 
-            theme_title: themeInfo.theme_title,
-            theme_content: themeInfo.theme_content,  
-            restaurant_info: themeList
-        })
+        if(themeInfo != null){
+            res.status(200).json({ 
+                theme_title: themeInfo.theme_title,
+                theme_content: themeInfo.theme_content,  
+                restaurant_info: themeList
+            })
+        } else {
+            res.status(400).json({ 
+                theme_title: "",
+                theme_content: "",  
+                restaurant_info: []
+            })
+        }
     } catch (error) {
         console.log(error);
         res.status(400).json({
