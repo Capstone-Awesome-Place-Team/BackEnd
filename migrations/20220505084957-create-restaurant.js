@@ -16,17 +16,11 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: false
       },
-      gu: {
-        type: Sequelize.STRING(4),
-      },
       address: {
         type: Sequelize.STRING(255),
       },
-      type: {
-        type: Sequelize.STRING(10),
-      },
       tag: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.TEXT,
       },
       price: {
         type: Sequelize.INTEGER
