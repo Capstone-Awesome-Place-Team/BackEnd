@@ -24,17 +24,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    gu: {
-      type: DataTypes.STRING(4),
-    },
     address: {
       type: DataTypes.STRING(255),
     },
-    type: {
-      type: DataTypes.STRING(10),
-    },
     tag: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.TEXT,
     },
     price: {
       type: DataTypes.INTEGER,
