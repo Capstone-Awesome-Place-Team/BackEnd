@@ -139,27 +139,15 @@ exports.Mypage = async function (req, res) {
           where: { r_code: key.dataValues.r_code },
         });
         likeList.push({
-<<<<<<< HEAD
           r_code: restaurantInfo.r_code,
           restaurant_name: restaurantInfo.r_name,
-          img: restaurantInfo.image,
+          img: restaurantInfo.image.split(" ")[0],
           address: restaurantInfo.address,
           star: restaurantInfo.stars,
           options: {
             takeout: restaurantInfo.takeout,
             parking: restaurantInfo.parking,
           },
-=======
-            r_code: restaurantInfo.r_code,
-            restaurant_name: restaurantInfo.r_name,
-            img: restaurantInfo.image.split(' ')[0],
-            address: restaurantInfo.address,
-            star: restaurantInfo.stars,
-            options: {
-                takeout: restaurantInfo.takeout,
-                parking: restaurantInfo.parking,
-            },
->>>>>>> 4eace81745c3d342a79016fad83d538f84339cb8
         });
       }
       let nickname = result.dataValues.nickname;
