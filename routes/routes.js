@@ -19,5 +19,5 @@ router.get("/theme_list/:theme_title", ThemeController.Theme_list); //테마별�
 router.post("/category", RestaurantController.Category); //카테고리 url 매핑
 router.get("/restaurant/:r_code", RestaurantController.RestaurantDetail); //상세페이지 url 매핑
 router.post("/search", RestaurantController.Search); //검색 url 매핑
-
+//
 module.exports = router;
