@@ -428,7 +428,7 @@ exports.Search = async function (req, res) {
   } catch (error) {
     console.log(error);
     res.status(400).json({
-      error: "카테고리 로딩중 오류가 발생했습니다. ",
+      error: "검색 로딩중 오류가 발생했습니다. ",
     });
   }
 };
