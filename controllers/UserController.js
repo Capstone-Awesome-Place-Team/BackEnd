@@ -124,30 +124,30 @@ exports.Mypage = async function (req, res) {
     let token = req.headers.authorization.split("Bearer ")[1];
     //해당 user의 nickname 받아오기
     let result = await USER.findOne({
-      where: { token: token }
+      where: { token: token },
     });
     if (result) {
       //user가 찜한 음식점의 r_code 받아오기
       let likeRestaurantList = await LIKE.findAll({
         attributes: ["r_code"],
-        where: { id: result.dataValues.id }
+        where: { id: result.dataValues.id },
       });
       let likeList = [];
       //받은 r_code 리스트로 해당 음식점 정보 리스트 받아오기
       for (const key of likeRestaurantList) {
-            restaurantInfo = await RESTAURANT.findOne({
-            where: { r_code: key.dataValues.r_code }
+        restaurantInfo = await RESTAURANT.findOne({
+          where: { r_code: key.dataValues.r_code },
         });
         likeList.push({
-            r_code: restaurantInfo.r_code,
-            restaurant_name: restaurantInfo.r_name,
-            img: restaurantInfo.image.split(' ')[0],
-            address: restaurantInfo.address,
-            star: restaurantInfo.stars,
-            options: {
-                takeout: restaurantInfo.takeout,
-                parking: restaurantInfo.parking,
-            },
+          r_code: restaurantInfo.r_code,
+          restaurant_name: restaurantInfo.r_name,
+          img: restaurantInfo.image.split(" ")[0],
+          address: restaurantInfo.address,
+          star: restaurantInfo.stars,
+          options: {
+            takeout: restaurantInfo.takeout,
+            parking: restaurantInfo.parking,
+          },
         });
       }
       let nickname = result.dataValues.nickname;
@@ -165,6 +165,7 @@ exports.Mypage = async function (req, res) {
   }
 };
 
+///////
 exports.UserEdit = async function (req, res) {
   try {
     let token = req.headers.authorization.split("Bearer ")[1];
@@ -182,7 +183,7 @@ exports.UserEdit = async function (req, res) {
       .createHash("sha512")
       .update(req.body.pw + salt_value)
       .digest("hex");
-    
+
     USER.update(
       {
         nickname: req.body.nickname,
@@ -191,16 +192,16 @@ exports.UserEdit = async function (req, res) {
       },
       { where: { token: token } }
     )
-    .then((result) => {
-      res.status(201).json({
-        message: "개인 정보 수정 성공",
+      .then((result) => {
+        res.status(201).json({
+          message: "개인 정보 수정 성공",
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          error: err,
+        });
       });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        error: err,
-      });
-    });
   } catch (error) {
     console.log(error);
     res.status(400).json({

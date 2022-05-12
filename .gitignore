@@ -2,6 +2,7 @@
 
 # database 보안상 gitignore 해야함! pw유출 조심!
 /config
+data.json
 
 # dependencies
 /node_modules
