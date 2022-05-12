@@ -372,6 +372,7 @@ exports.Search = async function (req, res) {
   try {
     let search = req.body.search;
     let searchList = [];
+    let nameSearchList = [];
     let result = [];
     searchList = await RESTAURANT.findAll({
       attributes: [
@@ -386,6 +387,21 @@ exports.Search = async function (req, res) {
       ],
       where: { [Op.or]: [{ tag: { [Op.like]: `%${search}%` } }] },
     });
+    nameSearchList = await RESTAURANT.findAll({
+      attributes: [
+        [sequelize.fn("DISTINCT", sequelize.col("r_code")), "r_code"],
+        "r_name",
+        "image",
+        "address",
+        "stars",
+        "price",
+        "takeout",
+        "parking",
+      ],
+      where: { [Op.or]: [{ r_name: { [Op.like]: `%${search}%` } }] },
+    });
+
+    searchList.push(...nameSearchList);
 
     for (const key of searchList) {
       let comment = await COMMENT.findOne({
