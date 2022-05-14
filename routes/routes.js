@@ -6,6 +6,7 @@ var UserController = require("../controllers/UserController");
 var LikeController = require("../controllers/LikeController");
 var ThemeController = require("../controllers/ThemeController");
 var RestaurantController = require("../controllers/RestaurantController");
+var CommentController = require("../controllers/CommentController");
 //controller 읽기
 
 router.post("/signup", UserController.Signup); //회원가입 url 매핑
@@ -19,5 +20,6 @@ router.get("/theme_list/:theme_title", ThemeController.Theme_list); //테마별�
 router.post("/category", RestaurantController.Category); //카테고리 url 매핑
 router.get("/restaurant/:r_code", RestaurantController.RestaurantDetail); //상세페이지 url 매핑
 router.post("/search", RestaurantController.Search); //검색 url 매핑
-//
+router.post("/write", CommentController.Write);//리뷰작성 url 매핑
+
 module.exports = router;
