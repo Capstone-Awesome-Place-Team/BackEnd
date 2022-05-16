@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true
     },
     image: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
     },
     r_name: { 
       type: DataTypes.STRING(255),
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(255),
     },
     tag: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(255),
     },
     price: {
       type: DataTypes.INTEGER,

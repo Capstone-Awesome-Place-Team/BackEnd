@@ -10,7 +10,7 @@ module.exports = {
         autoIncrement: true
       },
       image: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.TEXT,
       },
       r_name: { 
         type: Sequelize.STRING(255),
@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.STRING(255),
       },
       tag: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
       },
       price: {
         type: Sequelize.INTEGER
