@@ -260,23 +260,61 @@ exports.Category = async function (req, res) {
 
 exports.RestaurantDetail = async function (req, res) {
   try {
-    let token = req.headers.authorization.split("Bearer ")[1];
-    //해당 user의 nickname 받아오기
-    let userid = await USER.findOne({
-      attribute: ["id"],
-      where: { token: token },
-    });
     let like = false;
-    await LIKE.findOne({
-      where: { id: userid.dataValues.id, r_code: req.params.r_code },
-    }).then((result) => {
-      if (result == null) {
-        like = false;
-      } else {
-        like = true;
-      }
-    });
     let comments = [];
+    let mycomment;
+    if(req.headers.authorization != undefined){ //로그인 한 경우
+      let token = req.headers.authorization.split("Bearer ")[1];
+      //해당 user의 nickname 받아오기
+      let userid = await USER.findOne({
+        attribute: ["id"],
+        where: { token: token },
+      });
+      
+      await LIKE.findOne({
+        where: { id: userid.dataValues.id, r_code: req.params.r_code },
+      }).then((result) => {
+        if (result == null) {
+          like = false;
+        } else {
+          like = true;
+        }
+      });
+      let mycommentInfo = await COMMENT.findOne({
+        attributes: [
+          "comment_title",
+          "comment_content",
+          "star",
+          [
+            sequelize.fn("DATE_FORMAT", sequelize.col("createdAt"), "%m/%d"),
+            "createdAt",
+          ],
+        ],
+        where: { id: userid.dataValues.id, r_code: req.params.r_code },
+      });
+      if (mycommentInfo != null) {
+        mycomment = {
+          star: mycommentInfo.dataValues.star,
+          title: mycommentInfo.dataValues.comment_title,
+          content: mycommentInfo.dataValues.comment_content,
+          time: mycommentInfo.dataValues.createdAt,
+        };
+      } else {
+        mycomment = {
+          star: 0,
+          title: "",
+          content: "",
+          time: "",
+        };
+      }
+    } else { //게스트인 경우
+      mycomment = {
+        star: 0,
+        title: "",
+        content: "",
+        time: "",
+      };
+    }
     restaurantInfo = await RESTAURANT.findOne({
       attributes: [
         "r_code",
@@ -304,34 +342,6 @@ exports.RestaurantDetail = async function (req, res) {
       ],
       where: { r_code: req.params.r_code },
     });
-    let comment = await COMMENT.findOne({
-      attributes: [
-        "comment_title",
-        "comment_content",
-        "star",
-        [
-          sequelize.fn("DATE_FORMAT", sequelize.col("createdAt"), "%m/%d"),
-          "createdAt",
-        ],
-      ],
-      where: { id: userid.dataValues.id, r_code: req.params.r_code },
-    });
-    let mycomment;
-    if (comment != null) {
-      mycomment = {
-        star: comment.dataValues.star,
-        title: comment.dataValues.comment_title,
-        content: comment.dataValues.comment_content,
-        time: comment.dataValues.createdAt,
-      };
-    } else {
-      mycomment = {
-        star: 0,
-        title: "",
-        content: "",
-        time: "",
-      };
-    }
     for (const key of commentList) {
       let nickname = await USER.findOne({
         attribute: ["nickname"],
