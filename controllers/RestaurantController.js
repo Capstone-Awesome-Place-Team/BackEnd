@@ -263,14 +263,14 @@ exports.RestaurantDetail = async function (req, res) {
     let like = false;
     let comments = [];
     let mycomment;
-    if(req.headers.authorization != undefined){ //로그인 한 경우
+    if (req.headers.authorization != undefined) {
+      //로그인 한 경우
       let token = req.headers.authorization.split("Bearer ")[1];
       //해당 user의 nickname 받아오기
       let userid = await USER.findOne({
         attribute: ["id"],
         where: { token: token },
       });
-      
       await LIKE.findOne({
         where: { id: userid.dataValues.id, r_code: req.params.r_code },
       }).then((result) => {
@@ -307,7 +307,8 @@ exports.RestaurantDetail = async function (req, res) {
           time: "",
         };
       }
-    } else { //게스트인 경우
+    } else {
+      //게스트인 경우
       mycomment = {
         star: 0,
         title: "",
@@ -395,23 +396,13 @@ exports.Search = async function (req, res) {
         "takeout",
         "parking",
       ],
-      where: { [Op.or]: [{ tag: { [Op.like]: `%${search}%` } }] },
+      where: {
+        [Op.or]: [
+          { tag: { [Op.like]: `%${search}%` } },
+          { r_name: { [Op.like]: `%${search}%` } },
+        ],
+      },
     });
-    nameSearchList = await RESTAURANT.findAll({
-      attributes: [
-        [sequelize.fn("DISTINCT", sequelize.col("r_code")), "r_code"],
-        "r_name",
-        "image",
-        "address",
-        "stars",
-        "price",
-        "takeout",
-        "parking",
-      ],
-      where: { [Op.or]: [{ r_name: { [Op.like]: `%${search}%` } }] },
-    });
-
-    searchList.push(...nameSearchList);
 
     for (const key of searchList) {
       let comment = await COMMENT.findOne({
