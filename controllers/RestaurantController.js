@@ -470,6 +470,7 @@ exports.SearchList = async function (req, res) {
         img: key.dataValues.image.split(" ")[0],
         address: key.dataValues.address,
         star: key.dataValues.stars,
+        comment_count: comment.dataValues.comment_count,
         price: key.dataValues.price,
         options: {
           takeout: key.dataValues.takeout,
