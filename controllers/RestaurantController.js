@@ -271,7 +271,6 @@ exports.RestaurantDetail = async function (req, res) {
         attribute: ["id"],
         where: { token: token },
       });
-
       await LIKE.findOne({
         where: { id: userid.dataValues.id, r_code: req.params.r_code },
       }).then((result) => {
