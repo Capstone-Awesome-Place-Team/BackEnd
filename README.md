@@ -1,12 +1,12 @@
 ##  맛집 추천 웹 서비스(Recommending restaurant web service) : BackEnd
 #### Description
   > 22.02.14 ~ 22.05.31
-#### Member
+#### 👨‍💻Member
   > 이선호
   > 
   > 정의정
 #### contest
-  > 2022 Capstone Design Project
+  > 📌 2022 Capstone Design 강의 프로젝트
 
 ### 개요
   > 서울열린데이터광장에서 제공하는 공공데이터를 가공, 활용하여 소비자가 선택한 음식점에 대한 정보를 보다 쉽게 제공받을 수 있는 서비스
