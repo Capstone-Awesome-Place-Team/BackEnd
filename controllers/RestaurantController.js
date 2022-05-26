@@ -383,7 +383,60 @@ exports.Search = async function (req, res) {
   try {
     let search = req.body.search;
     let searchList = [];
-    let nameSearchList = [];
+    let result = [];
+    searchList = await RESTAURANT.findAll({
+      attributes: [
+        [sequelize.fn("DISTINCT", sequelize.col("r_code")), "r_code"],
+        "r_name",
+        "image",
+        "address",
+        "stars",
+        "price",
+        "takeout",
+        "parking",
+      ],
+      where: {
+        [Op.or]: [
+          { tag: { [Op.like]: `%${search}%` } },
+          { r_name: { [Op.like]: `%${search}%` } },
+        ],
+      },
+    });
+
+    for (const key of searchList) {
+      let comment = await COMMENT.findOne({
+        attributes: [
+          [sequelize.fn("COUNT", sequelize.col("c_code")), "comment_count"],
+        ],
+        where: { r_code: key.dataValues.r_code },
+      });
+      result.push({
+        r_code: key.dataValues.r_code,
+        restaurant_name: key.dataValues.r_name,
+        img: key.dataValues.image.split(" ")[0],
+        address: key.dataValues.address,
+        star: key.dataValues.stars,
+        comment_count: comment.dataValues.comment_count,
+        price: key.dataValues.price,
+        options: {
+          takeout: key.dataValues.takeout,
+          parking: key.dataValues.parking,
+        },
+      });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error: "검색 로딩중 오류가 발생했습니다. ",
+    });
+  }
+};
+
+exports.SearchList = async function (req, res) {
+  try {
+    let search = req.params.search;
+    let searchList = [];
     let result = [];
     searchList = await RESTAURANT.findAll({
       attributes: [
