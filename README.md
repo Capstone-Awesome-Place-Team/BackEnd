@@ -38,7 +38,8 @@
   <img src="https://user-images.githubusercontent.com/94631526/169692379-441af978-ce7f-437f-b6f7-5fb6c108e308.png" width=650 height=300>
   
 ### 아키텍처
-  <img src="https://user-images.githubusercontent.com/94631526/170025284-ea031da0-5d29-4881-84a2-8fae5cd3bcdc.png" width=530 height=300>
+  <img src="https://user-images.githubusercontent.com/94631526/170449740-94127ba1-0709-4612-be87-0d5d24a95c14.png" width=650 height=390>
+  <img src="https://user-images.githubusercontent.com/94631526/170449755-98ffebd5-3706-4d11-bfd4-b2aef640ff72.png" width=350 height=280>
   
 ### 설계
 #### 1. ERD
