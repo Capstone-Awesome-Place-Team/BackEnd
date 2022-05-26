@@ -1,13 +1,12 @@
-//request의 end point를 어떤 모듈에서 처리할 지
 var express = require("express");
 var router = express.Router();
-const req = require("express/lib/request");
+
+//controller 읽기
 var UserController = require("../controllers/UserController");
 var LikeController = require("../controllers/LikeController");
 var ThemeController = require("../controllers/ThemeController");
 var RestaurantController = require("../controllers/RestaurantController");
 var CommentController = require("../controllers/CommentController");
-//controller 읽기
 
 router.post("/signup", UserController.Signup); //회원가입 url 매핑
 router.post("/signin", UserController.Signin); //로그인 url 매핑

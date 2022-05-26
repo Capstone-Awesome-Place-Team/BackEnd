@@ -1,11 +1,12 @@
+//Model
 const THEME = require("../models/").THEME;
 const RESTAURANT = require("../models/").RESTAURANT;
 const sequelize = require("sequelize");
 
-//메인 정보불러오기
+//메인 정보
 exports.Main = async function (req, res) {
   try {
-    console.log(sequelize.fn);
+    //테마 정보(테마 title, image) select
     let themeInfo = await THEME.findAll({
       attributes: [
         sequelize.fn("DISTINCT", sequelize.col("theme_title")),
@@ -13,9 +14,7 @@ exports.Main = async function (req, res) {
         "theme_img",
       ],
     });
-    console.log(themeInfo);
     let themeList = [...themeInfo];
-
     res.status(200).json(themeList);
   } catch (error) {
     console.log(error);
@@ -25,30 +24,30 @@ exports.Main = async function (req, res) {
   }
 };
 
-//테마별추천페이지 음식점 정보불러오기
+//테마별추천페이지 음식점 정보
 exports.Theme_list = async function (req, res) {
   try {
+    let themeList = [];
+    //해당 테마 정보 select
     let themeInfo = await THEME.findOne({
       attributes: ["theme_title", "theme_content"],
       where: {
         theme_title: req.params.theme_title,
       },
     });
-    console.log("THEME INFO IS" + themeInfo);
+    //해당 테마 음식점 code, intro select
     let themeRestaurantList = await THEME.findAll({
       attributes: ["r_code", "restaurant_intro"],
       where: { theme_title: req.params.theme_title },
       row: true,
     });
-    console.log(themeRestaurantList);
-    let themeList = [];
-    //받은 r_code 리스트로 해당 음식점 정보 리스트 받아오기
+    //r_code 리스트로 해당 음식점 정보 리스트 select
     for (const key of themeRestaurantList) {
-      console.log(key.dataValues.r_code);
-
+      //음식점 상세 정보 select
       restaurantInfo = await RESTAURANT.findOne({
         where: { r_code: key.dataValues.r_code },
       });
+      //음식점 정보 하나씩 배열에 삽입
       themeList.push({
         r_code: restaurantInfo.r_code,
         restaurant_name: restaurantInfo.r_name,
