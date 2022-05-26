@@ -1,16 +1,19 @@
+//Model
 const RESTAURANT = require("../models/").RESTAURANT;
 const COMMENT = require("../models/").COMMENT;
 const LIKE = require("../models/").LIKE;
 const USER = require("../models/").USER;
+
 const sequelize = require("sequelize");
 const { Op } = require("sequelize");
-const { Like } = require("./LikeController");
 
+//카테고리
 exports.Category = async function (req, res) {
   try {
     let category = req.body.category;
     let categoryList = [];
     let result = [];
+    //카테고리에 맞는 음식점 리스트 select
     switch (category) {
       case "한식":
         categoryList = await RESTAURANT.findAll({
@@ -24,7 +27,7 @@ exports.Category = async function (req, res) {
             "takeout",
             "parking",
           ],
-          where: { [Op.or]: [{ tag: { [Op.like]: "%한식%" } }] },
+          where: { tag: { [Op.like]: "%한식%" } },
         });
         break;
       case "중국식":
@@ -39,7 +42,7 @@ exports.Category = async function (req, res) {
             "takeout",
             "parking",
           ],
-          where: { [Op.or]: [{ tag: { [Op.like]: "%중국식%" } }] },
+          where: { tag: { [Op.like]: "%중국식%" } },
         });
         break;
       case "일식":
@@ -54,7 +57,7 @@ exports.Category = async function (req, res) {
             "takeout",
             "parking",
           ],
-          where: { [Op.or]: [{ tag: { [Op.like]: "%일식%" } }] },
+          where: { tag: { [Op.like]: "%일식%" } },
         });
         break;
       case "뷔페식":
@@ -69,7 +72,7 @@ exports.Category = async function (req, res) {
             "takeout",
             "parking",
           ],
-          where: { [Op.or]: [{ tag: { [Op.like]: "%뷔페%" } }] },
+          where: { tag: { [Op.like]: "%뷔페%" } },
         });
         break;
       case "경양식":
@@ -84,7 +87,7 @@ exports.Category = async function (req, res) {
             "takeout",
             "parking",
           ],
-          where: { [Op.or]: [{ tag: { [Op.like]: "%경양식%" } }] },
+          where: { tag: { [Op.like]: "%경양식%" } },
         });
         break;
       case "찜탕":
@@ -219,7 +222,7 @@ exports.Category = async function (req, res) {
             "takeout",
             "parking",
           ],
-          where: { [Op.or]: [{ tag: { [Op.like]: "%분식%" } }] },
+          where: { tag: { [Op.like]: "%분식%" } },
         });
         break;
       default:
@@ -229,12 +232,14 @@ exports.Category = async function (req, res) {
         return;
     }
     for (const key of categoryList) {
+      //해당 음식점의 댓글 개수 select
       let comment = await COMMENT.findOne({
         attributes: [
           [sequelize.fn("COUNT", sequelize.col("c_code")), "comment_count"],
         ],
         where: { r_code: key.dataValues.r_code },
       });
+      //음식점 정보 배열에 하나씩 삽입
       result.push({
         r_code: key.dataValues.r_code,
         restaurant_name: key.dataValues.r_name,
@@ -258,19 +263,21 @@ exports.Category = async function (req, res) {
   }
 };
 
+//음식점 상세정보
 exports.RestaurantDetail = async function (req, res) {
   try {
-    let like = false;
+    let like = false; //찜 여부
     let comments = [];
     let mycomment;
-    if (req.headers.authorization != undefined) {
-      //로그인 한 경우
+    if (req.headers.authorization != undefined) { //로그인 한 경우
+      //요청 헤더 내의 authorization 헤더에서 토큰 추출
       let token = req.headers.authorization.split("Bearer ")[1];
-      //해당 user의 nickname 받아오기
+      //토큰과 일치하는 user id select
       let userid = await USER.findOne({
         attribute: ["id"],
         where: { token: token },
       });
+      //해당 음식점을 찜했는지 확인
       await LIKE.findOne({
         where: { id: userid.dataValues.id, r_code: req.params.r_code },
       }).then((result) => {
@@ -280,6 +287,7 @@ exports.RestaurantDetail = async function (req, res) {
           like = true;
         }
       });
+      //해당 user가 남긴 댓글 정보 select
       let mycommentInfo = await COMMENT.findOne({
         attributes: [
           "comment_title",
@@ -299,7 +307,7 @@ exports.RestaurantDetail = async function (req, res) {
           content: mycommentInfo.dataValues.comment_content,
           time: mycommentInfo.dataValues.createdAt,
         };
-      } else {
+      } else { //남긴 댓글이 없는 경우
         mycomment = {
           star: 0,
           title: "",
@@ -316,6 +324,7 @@ exports.RestaurantDetail = async function (req, res) {
         time: "",
       };
     }
+    //해당 음식점 정보 select
     restaurantInfo = await RESTAURANT.findOne({
       attributes: [
         "r_code",
@@ -329,7 +338,9 @@ exports.RestaurantDetail = async function (req, res) {
       ],
       where: { r_code: req.params.r_code },
     });
+    //이미지 url 두개 나누기
     let img_list = restaurantInfo.dataValues.image.split(" ");
+    //해당 음식점에 남긴 댓글 전부 select
     let commentList = await COMMENT.findAll({
       attributes: [
         "id",
@@ -348,6 +359,7 @@ exports.RestaurantDetail = async function (req, res) {
         attribute: ["nickname"],
         where: { id: key.dataValues.id },
       });
+      //댓글 정보 배열에 하나씩 삽입
       comments.push({
         nickname: nickname.dataValues.nickname,
         star: key.dataValues.star,
@@ -379,11 +391,13 @@ exports.RestaurantDetail = async function (req, res) {
   }
 };
 
+//음식점 검색
 exports.Search = async function (req, res) {
   try {
-    let search = req.body.search;
+    let search = req.body.search; //검색 키워드
     let searchList = [];
     let result = [];
+    // 검색 키워드에 해당하는 음식점 리스트 select
     searchList = await RESTAURANT.findAll({
       attributes: [
         [sequelize.fn("DISTINCT", sequelize.col("r_code")), "r_code"],
@@ -402,7 +416,6 @@ exports.Search = async function (req, res) {
         ],
       },
     });
-
     for (const key of searchList) {
       let comment = await COMMENT.findOne({
         attributes: [
@@ -410,6 +423,7 @@ exports.Search = async function (req, res) {
         ],
         where: { r_code: key.dataValues.r_code },
       });
+      //검색 결과 음식점 정보 하나씩 배열에 삽입
       result.push({
         r_code: key.dataValues.r_code,
         restaurant_name: key.dataValues.r_name,
@@ -433,11 +447,13 @@ exports.Search = async function (req, res) {
   }
 };
 
-exports.SearchList = async function (req, res) {
+//음식점 검색 새로고침
+exports.SearchList = async function (req, res) { 
   try {
-    let search = req.params.search;
+    let search = req.params.search; //검색 키워드
     let searchList = [];
     let result = [];
+    // 검색 키워드에 해당하는 음식점 리스트 select
     searchList = await RESTAURANT.findAll({
       attributes: [
         [sequelize.fn("DISTINCT", sequelize.col("r_code")), "r_code"],
@@ -456,7 +472,6 @@ exports.SearchList = async function (req, res) {
         ],
       },
     });
-
     for (const key of searchList) {
       let comment = await COMMENT.findOne({
         attributes: [
@@ -464,6 +479,7 @@ exports.SearchList = async function (req, res) {
         ],
         where: { r_code: key.dataValues.r_code },
       });
+      //검색 결과 음식점 정보 하나씩 배열에 삽입
       result.push({
         r_code: key.dataValues.r_code,
         restaurant_name: key.dataValues.r_name,
